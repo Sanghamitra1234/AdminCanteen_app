@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">AdminCanteen_app</string>
+    <string-array name="android_dropdown_arrays">
+        <item>Category of Food</item>
+        <item>Breakfast</item>
+        <item>Lunch</item>
+        <item>Snacks</item>
+        <item>Dinner</item>
+    </string-array>
+</resources>

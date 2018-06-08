@@ -25,6 +25,12 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionDeniedResponse;
+import com.karumi.dexter.listener.PermissionGrantedResponse;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.single.PermissionListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -37,90 +43,96 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Button buttonUpload;
+    private Button buttonUpload, buttonAddImage;
     private ImageView imageView;
     private EditText editText;
     private EditText price;
     private Spinner spinner1;
-
+    private Bitmap bitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
+        buttonAddImage = (Button) findViewById(R.id.buttonAddImage);
         buttonUpload = (Button) findViewById(R.id.buttonUpload);
         imageView = (ImageView) findViewById(R.id.imageView);
         editText = (EditText) findViewById(R.id.editTextName);
         price = (EditText) findViewById(R.id.editTextPrice);
-
         spinner1 = (Spinner) findViewById(R.id.spinner1);
-        spinner1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            String firstItem = String.valueOf(spinner1.getSelectedItem());
+
+        //ADDING IMAGE
+        buttonAddImage.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (firstItem.equals(String.valueOf(spinner1.getSelectedItem()))) {
-                    // ToDo when first item is selected
+            public void onClick(View v) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    checkPermissions();
                 } else {
-                    Toast.makeText(parent.getContext(),
-                            "You have selected : " + parent.getItemAtPosition(position).toString(),
-                            Toast.LENGTH_LONG).show();
-                    // Todo when item is selected by the user
+                    Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                    startActivityForResult(i, 100);
                 }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
             }
         });
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && ContextCompat.checkSelfPermission(this,
-                Manifest.permission.READ_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-            Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-                    Uri.parse("package:" + getPackageName()));
-            finish();
-            startActivity(intent);
-            return;
-
-        }
         buttonUpload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (editText.getText().toString().trim().isEmpty()) {
-                    editText.setError("Enter Food Name first");
-                    editText.requestFocus();
+
+                //validating data
+                if (String.valueOf(spinner1.getSelectedItem()).equals(String.valueOf(spinner1.getItemAtPosition(0)))) {
+                    Toast.makeText(MainActivity.this, "Select the menu category", Toast.LENGTH_SHORT).show();
+                    spinner1.requestFocus();
                     return;
                 }
-                else if (price.getText().toString().trim().isEmpty()) {
-                    price.setError("Enter Food Price");
+                if (editText.getText().toString().trim().isEmpty()) {
+                    editText.setError("Enter Food Name");
+                    editText.requestFocus();
+                    return;
+                } else if (price.getText().toString().trim().isEmpty()) {
+                    price.setError("Enter Price");
                     price.requestFocus();
                     return;
                 }
 
-                Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(i, 100);
+                if (bitmap != null)
+                    uploadBitmap(bitmap);
+                else
+                    Toast.makeText(MainActivity.this, "No image selected", Toast.LENGTH_SHORT).show();
             }
         });
+
+    }
+
+    void checkPermissions() {
+        Dexter.withActivity(this)
+                .withPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+                .withListener(new PermissionListener() {
+                    @Override
+                    public void onPermissionGranted(PermissionGrantedResponse response) {
+                        Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                        startActivityForResult(i, 100);
+                    }
+
+                    @Override
+                    public void onPermissionDenied(PermissionDeniedResponse response) {/* ... */}
+
+                    @Override
+                    public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {/* ... */}
+                }).check();
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 100 && resultCode == RESULT_OK && data != null) {
-
             //getting the image Uri
             Uri imageUri = data.getData();
             try {
                 //getting bitmap object from uri
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
-
+                bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
                 //displaying selected image to imageview
                 imageView.setImageBitmap(bitmap);
-
-                //calling the method uploadBitmap to upload image
-                uploadBitmap(bitmap);
+                imageView.setVisibility(View.VISIBLE);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -136,8 +148,9 @@ public class MainActivity extends AppCompatActivity {
     private void uploadBitmap(final Bitmap bitmap) {
 
         final String breakfast_name = editText.getText().toString().trim();
-        final String breakfast_price=price.getText().toString().trim();
+        final String breakfast_price = price.getText().toString().trim();
         final String breakfast_category = String.valueOf(spinner1.getSelectedItem());
+        Toast.makeText(this, breakfast_category, Toast.LENGTH_SHORT).show();
         //Integer.parseInt(jsonObj.get("id"));
 
 
@@ -150,6 +163,7 @@ public class MainActivity extends AppCompatActivity {
                             Toast.makeText(getApplicationContext(), obj.getString("message"), Toast.LENGTH_SHORT).show();
                         } catch (JSONException e) {
                             e.printStackTrace();
+                            Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     }
                 },
@@ -158,21 +172,20 @@ public class MainActivity extends AppCompatActivity {
                     public void onErrorResponse(VolleyError error) {
                         Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
                     }
-                })
-        {
+                }) {
 
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
                 params.put("breakfast_name", breakfast_name);
-                params.put("breakfast_category",breakfast_category);
-                params.put("breakfast_price",breakfast_price);
+                params.put("breakfast_category", breakfast_category);
+                params.put("breakfast_price", breakfast_price);
                 return params;
             }
 
             protected Map<String, DataPart> getByteData() {
                 Map<String, DataPart> params = new HashMap<>();
                 long imagename = System.currentTimeMillis();
-                params.put("pic", new DataPart( "http://192.168.1.3/breakfast/uploads/" + imagename +".png", getFileDataFromDrawable(bitmap)));
+                params.put("pic", new DataPart("http://sleepygamers.xyz/tatapower/uploads/" + imagename + ".png", getFileDataFromDrawable(bitmap)));
                 return params;
             }
         };

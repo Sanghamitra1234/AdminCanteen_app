@@ -40,6 +40,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import xyz.sleepygamers.admincanteen_app.editmenu.EditMenuActivity;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -52,6 +54,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MainActivity.this,AddMenuActivity.class));
+            }
+        });
+        findViewById(R.id.edit_menu).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this,EditMenuActivity.class));
             }
         });
     }

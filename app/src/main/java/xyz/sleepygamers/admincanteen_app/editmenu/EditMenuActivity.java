@@ -70,7 +70,24 @@ public class EditMenuActivity extends AppCompatActivity implements MaterialTabLi
         }
 
         public Fragment getItem(int num) {
-            return new FoodMenuFragment();
+            Bundle bundle = new Bundle();
+            switch (num) {
+                case 0:
+                    bundle.putString("params", "breakfast");
+                    break;
+                case 1:
+                    bundle.putString("params", "lunch");
+                    break;
+                case 2:
+                    bundle.putString("params", "snacks");
+                    break;
+                case 3:
+                    bundle.putString("params", "dinner");
+                    break;
+            }
+            FoodMenuFragment foodMenuFragment = new FoodMenuFragment();
+            foodMenuFragment.setArguments(bundle);
+            return foodMenuFragment;
         }
 
         @Override

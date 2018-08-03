@@ -2,10 +2,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="240dp"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
-    tools:context=".AddMenuActivity">
+    android:padding="16dp">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -16,14 +16,6 @@
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:orientation="vertical">
-
-            <Spinner
-                android:id="@+id/spinner1"
-                android:layout_width="fill_parent"
-                android:layout_height="53dp"
-                android:backgroundTint="#d11f08"
-                android:entries="@array/android_dropdown_arrays"
-                android:padding="5dp" />
 
             <EditText
                 android:id="@+id/editTextName"
@@ -58,11 +50,12 @@
                     android:text="nonveg" />
             </RadioGroup>
 
+
             <Button
-                android:id="@+id/buttonUpload"
+                android:id="@+id/buttonUpdate"
                 android:layout_width="123dp"
                 android:layout_height="wrap_content"
-                android:text="Add" />
+                android:text="UPDATE" />
 
 
         </LinearLayout>

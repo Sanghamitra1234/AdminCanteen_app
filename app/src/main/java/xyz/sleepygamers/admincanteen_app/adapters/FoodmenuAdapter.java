@@ -66,7 +66,6 @@ public class FoodmenuAdapter extends RecyclerView.Adapter<FoodmenuAdapter.ViewHo
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView name, price, menutype;
-        private ImageView imageView;
         private ImageButton edit, delete;
 
         public ViewHolder(View itemView) {

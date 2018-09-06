@@ -20,7 +20,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".AddMenuActivity" />
-        <activity android:name=".editmenu.EditMenuActivity"></activity>
+        <activity android:name=".editmenu.EditMenuActivity" />
+        <activity android:name=".OrdersActivity"></activity>
     </application>
 
 </manifest>

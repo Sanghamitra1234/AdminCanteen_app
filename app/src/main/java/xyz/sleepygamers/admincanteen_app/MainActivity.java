@@ -53,13 +53,19 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.add_menu).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this,AddMenuActivity.class));
+                startActivity(new Intent(MainActivity.this, AddMenuActivity.class));
             }
         });
         findViewById(R.id.edit_menu).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this,EditMenuActivity.class));
+                startActivity(new Intent(MainActivity.this, EditMenuActivity.class));
+            }
+        });
+        findViewById(R.id.btn_orders).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, OrdersActivity.class));
             }
         });
     }

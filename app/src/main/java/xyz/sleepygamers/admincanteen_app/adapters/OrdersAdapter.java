@@ -37,6 +37,7 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.ViewHolder
         holder.tvName.setText(order.getUser_name());
         holder.tvPrice.setText(Integer.toString(order.getPrice()));
         holder.tvOrderDetails.setText(order.getOrder_details());
+        holder.tvOrderType.setText(order.getOrder_type());
     }
 
     @Override
@@ -45,13 +46,14 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.ViewHolder
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        private TextView tvName, tvPrice, tvOrderDetails;
+        private TextView tvName, tvPrice, tvOrderDetails,tvOrderType;
 
         public ViewHolder(View itemView) {
             super(itemView);
             tvName = itemView.findViewById(R.id.tv_name);
             tvPrice = itemView.findViewById(R.id.tv_price);
             tvOrderDetails = itemView.findViewById(R.id.tv_order);
+            tvOrderType = itemView.findViewById(R.id.tv_order_type);
         }
     }
 }

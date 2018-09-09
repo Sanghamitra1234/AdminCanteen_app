@@ -108,4 +108,18 @@ public class OrdersActivity extends AppCompatActivity {
             recyclerView.setVisibility(View.INVISIBLE);
         }
     }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        orderList.clear();
+        loadOrders();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        orderList.clear();
+        loadOrders();
+    }
 }

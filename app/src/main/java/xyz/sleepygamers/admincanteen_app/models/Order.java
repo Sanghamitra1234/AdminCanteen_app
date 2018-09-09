@@ -1,6 +1,8 @@
 package xyz.sleepygamers.admincanteen_app.models;
 
-public class Order {
+import java.io.Serializable;
+
+public class Order implements Serializable {
     private int id, price, user_id, user_roomno, user_uid;
     private String order_details, order_date, order_type, delivery_type, order_status, user_name;
 
